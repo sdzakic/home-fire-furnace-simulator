@@ -34,11 +34,21 @@
 <main>
   <section class="stage-grid">
     <div class="scene-col">
-      <div class="scene-scroll">
+      <div class="view-row">
+        <span data-i18n="view.label"></span>
+        <div class="seg" id="view" role="group" data-i18n-label="view.label">
+          <button type="button" data-view="schema" data-i18n="view.schema"></button><button type="button" data-view="photo" data-i18n="view.photo"></button>
+        </div>
+      </div>
+      <div class="scene-scroll" id="view-schema">
         <div class="scene-wrap">
           <svg id="scene" xmlns="http://www.w3.org/2000/svg"></svg>
           <canvas id="fx"></canvas>
         </div>
+      </div>
+      <div class="photo-wrap" id="view-photo" hidden>
+        <canvas id="photo" role="img" data-i18n-label="view.photoAlt"></canvas>
+        <p class="photo-note" data-i18n="view.photoNote"></p>
       </div>
 
       <div class="transport">

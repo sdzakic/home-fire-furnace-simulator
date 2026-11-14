@@ -5,6 +5,9 @@ const hr = {
   'app.lang': 'Jezik',
 
   'btn.ignite': 'Zapali vatru', 'btn.burning': 'Gori…', 'btn.addWood': 'Dodaj drva', 'btn.pause': 'Pauza', 'btn.resume': 'Nastavi',
+  'view.label': 'Prikaz', 'view.schema': 'Shema sustava', 'view.photo': 'Presjek kotla',
+  'view.photoAlt': 'Presjek kotla BioTec-L s animiranim izgaranjem',
+  'view.photoNote': 'Klikni na ložište za potpalu, na gornja vrata za dodavanje drva. Plavo: zrak za izgaranje. Slika presjeka: Centrometal.',
   'btn.reset': 'Ispočetka', 'btn.clean': 'Očisti izmjenjivač', 'btn.speed': 'Brzina', 'btn.time': 'Vrijeme',
 
   'stage.idle': 'Spremno za potpalu', 'stage.ignition': 'Potpala', 'stage.drying': 'Sušenje', 'stage.gasification': 'Rasplinjavanje',
@@ -105,6 +108,9 @@ const en = {
   'app.lang': 'Language',
 
   'btn.ignite': 'Light the fire', 'btn.burning': 'Burning…', 'btn.addWood': 'Add wood', 'btn.pause': 'Pause', 'btn.resume': 'Resume',
+  'view.label': 'View', 'view.schema': 'System diagram', 'view.photo': 'Boiler cutaway',
+  'view.photoAlt': 'BioTec-L boiler cutaway with animated combustion',
+  'view.photoNote': 'Click the firebox to light it, the upper door to add wood. Blue: combustion air. Cutaway image: Centrometal.',
   'btn.reset': 'Start over', 'btn.clean': 'Clean heat exchanger', 'btn.speed': 'Speed', 'btn.time': 'Time',
 
   'stage.idle': 'Ready to light', 'stage.ignition': 'Ignition', 'stage.drying': 'Drying', 'stage.gasification': 'Gasification',

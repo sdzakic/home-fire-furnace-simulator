@@ -156,7 +156,7 @@ ${valve(500, 575)}${pump('pm-boiler', 548, 575)}
 }
 
 // ---------- particles ----------
-function sprite(rgb) {
+export function sprite(rgb) {
   const c = document.createElement('canvas'); c.width = c.height = 64;
   const g = c.getContext('2d'), gr = g.createRadialGradient(32, 32, 0, 32, 32, 32);
   gr.addColorStop(0, `rgba(${rgb},1)`); gr.addColorStop(0.45, `rgba(${rgb},.45)`); gr.addColorStop(1, `rgba(${rgb},0)`);

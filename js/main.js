@@ -3,6 +3,7 @@ import {
   fuelLoad, chimneySteady, simulateBurn, litresHeated, houseDemandW,
 } from './physics.js';
 import { Scene } from './scene.js';
+import { PhotoView } from './photo.js';
 import { LineChart } from './charts.js';
 import { t } from './i18n.js';
 
@@ -13,7 +14,8 @@ const cssVar = (n) => `var(--${n})`;
 const cfg = clone(DEFAULTS);
 const sim = new Sim(cfg);
 const scene = new Scene($('scene'), $('fx'));
-const ui = { running: true, speed: 300 };
+const ui = { running: true, speed: 300, view: 'schema' };
+const photo = new PhotoView($('photo'), 'assets/boiler-cutaway.png', (a) => (a === 'ignite' ? ignite() : addWood()));
 
 // ---------- helpers ----------
 const getPath = (p) => p.split('.').reduce((o, k) => o[k], cfg);
@@ -270,7 +272,7 @@ function updateCharts() {
   ]);
 }
 function resetLive() {
-  scene.clearParticles();
+  scene.clearParticles(); photo.clearParticles();
   logSig = '';
   updateCharts();
 }
@@ -345,8 +347,17 @@ function addWood() {
 }
 function reset() { sim.reset(); resetLive(); refreshControls(); scene.applyConfig(cfg, t); }
 
+function setView(v) {
+  ui.view = v === 'photo' ? 'photo' : 'schema';
+  $('view-schema').hidden = ui.view !== 'schema';
+  $('view-photo').hidden = ui.view !== 'photo';
+  for (const b of $('view').children) b.setAttribute('aria-pressed', b.dataset.view === ui.view);
+  try { localStorage.setItem('view', ui.view); } catch { /* storage unavailable */ }
+  scene.resize(); photo.resize();
+}
+
 function setLang(l) {
-  t.setLang(l);
+  t.setLang(l); photo.setT(t);
   document.title = t('app.title');
   for (const b of $('lang').children) b.setAttribute('aria-pressed', b.dataset.lang === l);
   refreshControls(); scene.applyConfig(cfg, t); scene.txtT = 0;
@@ -366,6 +377,8 @@ function init() {
     b.setAttribute('aria-pressed', +b.dataset.speed === ui.speed);
   }
   for (const b of $('lang').children) b.addEventListener('click', () => setLang(b.dataset.lang));
+  for (const b of $('view').children) b.addEventListener('click', () => setView(b.dataset.view));
+  new ResizeObserver(() => photo.resize()).observe($('photo'));
   $('theme').addEventListener('click', () => {
     const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
     document.documentElement.dataset.theme = next;
@@ -376,11 +389,16 @@ function init() {
   setLang(t.lang());
   onConfig();
   const q = new URLSearchParams(location.search);
+  let v0 = q.get('view');
+  if (!v0) { try { v0 = localStorage.getItem('view'); } catch { /* storage unavailable */ } }
+  setView(v0);
   if (q.has('autostart')) {
     ui.speed = +q.get('speed') || ui.speed;
     for (const x of $('speed').children) x.setAttribute('aria-pressed', +x.dataset.speed === ui.speed);
     ignite();
     if (q.has('warp')) sim.advance(Math.min(48, +q.get('warp') || 0) * 3600);
+    // test aid: pre-run animation frames so a still screenshot shows particles mid-flight
+    for (let i = Math.min(2000, +q.get('frames') || 0); i > 0; i--) (ui.view === 'photo' ? photo : scene).frame(sim, 1 / 60, true);
   }
 
   let last = performance.now(), uiAcc = 1, chAcc = 1;
@@ -388,7 +406,7 @@ function init() {
     const dt = Math.min(0.1, (now - last) / 1000); last = now;
     const started = sim.s.lit || sim.s.t > 0;
     if (ui.running && started) sim.advance(dt * ui.speed);
-    scene.frame(sim, dt, ui.running);
+    if (ui.view === 'photo') photo.frame(sim, dt, ui.running); else scene.frame(sim, dt, ui.running);
     uiAcc += dt; chAcc += dt;
     if (uiAcc > 0.2) { uiAcc = 0; updateUI(); }
     if (chAcc > 0.6) { chAcc = 0; if (ui.running && started) updateCharts(); }
